@@ -1,0 +1,128 @@
+#include<stdio.h>
+#define MAX 20
+
+int array[MAX];
+int loop_count=0,comparisons=0;
+
+void display(int beg,int end)
+{
+    int i;
+    printf("\t");
+
+    for(i=beg; i<=end; i++)
+    {
+        printf("%d ",array[i]);
+    }
+}
+
+void merge( int first, int mid, int last )
+{
+    int temp[MAX];
+    int index_leftSA = first;
+    int index_rightSA = mid +1 ;
+    int index_tempA = first ;
+
+    printf("\nindex_leftSA=%d, index_rightSA=%d, index_tempA=%d, last=%d\n",index_leftSA,index_rightSA,index_tempA,last);
+    printf("\n Merge");
+    display(first,mid);
+    printf("with");
+    display(mid+1,last);
+    printf(": ");
+
+    while((index_leftSA <= mid) && (index_rightSA <= last))
+    {
+        loop_count+=2;
+        comparisons++;
+        if(array[index_leftSA] <= array[index_rightSA])
+        {
+            printf("Since %d <= %d\n",array[index_leftSA],array[index_rightSA]);
+            temp[index_tempA++] = array[index_leftSA++] ;
+            printf("temp[%d] = %d\n",index_tempA-1,array[index_leftSA-1]);
+        }
+
+        else
+        {
+            printf("Since %d < %d\n",array[index_rightSA],array[index_leftSA]);
+            temp[index_tempA++] = array[index_rightSA++] ;
+            printf("temp[%d] = %d\n",index_tempA-1,array[index_rightSA-1]);
+        }
+
+        printf("comparisons = %d\n",comparisons);
+    }
+
+    while( index_leftSA <= mid )
+    {
+        comparisons++;
+        temp[index_tempA++] = array[index_leftSA++];
+        printf("temp[%d] = %d\n",index_tempA-1,array[index_leftSA-1]);
+    }
+
+    while( index_rightSA <= last )
+    {
+        comparisons++;
+        temp[index_tempA++] = array[index_rightSA++];
+        printf("temp[%d] = %d\n",index_tempA-1,array[index_rightSA-1]);
+    }
+
+    printf("After merging...");
+    for(index_leftSA= first; index_leftSA <= last; index_leftSA++)
+    {
+        array[index_leftSA] = temp[index_leftSA];
+    }
+
+    display(first,last);
+    printf("\t ended merge");
+}/*End of merge()*/
+
+void merge_sort( int first, int last )
+{
+    int mid;
+    if( first < last)
+    {
+        mid = (first + last) / 2;
+        printf("\n Recursive Call for left-subarray :: " );
+        display(first,mid);
+        merge_sort(first,mid);
+
+        printf("\n Recursive Call for right-subarray :: ");
+        display(mid+1, last);
+        merge_sort( mid+1, last );
+
+        printf("\n\ncall merge");
+        merge( first, mid, last);
+        printf("\t end of merge_sort\n");
+    }
+
+    else
+        printf("\nRecursive call of merge sort returns 0\n");
+
+}/*End of merge_sort()*/
+
+void main()
+{
+    int initial_index, n;
+    printf("Enter the total no. of elements : ");
+    scanf("%d",&n);
+
+    for(initial_index=0; initial_index < n; initial_index++)
+    {
+        printf("Enter element %d : ", initial_index+1);
+        scanf("%d",&array[initial_index]);
+    }
+    printf("\nGiven Unsorted list is : ");
+    for(initial_index = 0 ; initial_index < n ; initial_index++)
+        printf("%d ", array[initial_index]);
+
+    printf("\n");
+    printf("\nCall merge_sort in main,");
+    merge_sort( 0, n-1);
+
+    printf("\nSorted list is : ");
+    for( initial_index = 0 ; initial_index < n ; initial_index++)
+        printf("%d ", array[initial_index]);
+
+    printf("\n\nLoop count = %d",loop_count);
+    printf("\nTotal no. of Comparisons = %d",comparisons);
+    printf("\t end of main");
+
+} /*End of main()*/
